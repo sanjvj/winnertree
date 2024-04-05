@@ -1,0 +1,44 @@
+import java.util.Scanner;
+import java.util.Arrays;
+
+public class WinnerTree {
+    private int[] tree;
+    private int[] players;
+    private int numPlayers;
+
+    public WinnerTree(int[] players) {
+        this.players = players;
+        this.numPlayers = players.length;
+        int treeSize = 2 * numPlayers - 1;
+        this.tree = new int[treeSize];
+        buildWinnerTree();
+    }
+
+    private void buildWinnerTree() {
+        for (int i = numPlayers - 1; i < tree.length; i++) {
+            tree[i] = i - (numPlayers - 1);
+        }
+        for (int i = numPlayers - 2; i >= 0; i--) {
+            tree[i] = players[tree[2 * i + 1]] < players[tree[2 * i + 2]] ? tree[2 * i + 2] : tree[2 * i + 1];
+        }
+    }
+
+    public int getWinner() {
+        return players[tree[0]];
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter the number of players: ");
+        int numPlayers = scanner.nextInt();
+        int[] players = new int[numPlayers];
+        System.out.println("Enter the scores of each player:");
+        for (int i = 0; i < numPlayers; i++) {
+            System.out.print("Player " + (i + 1) + ": ");
+            players[i] = scanner.nextInt();
+        }
+        WinnerTree winnerTree = new WinnerTree(players);
+        System.out.println("The winner is: " + winnerTree.getWinner());
+        scanner.close();
+    }
+}
